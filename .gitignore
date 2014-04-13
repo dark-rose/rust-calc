@@ -1,0 +1,10 @@
+*.o
+*.bc
+
+bochsout.txt
+
+src/kernel
+
+src/libcore-caef0f5f-0.0.rlib
+
+floppy.img

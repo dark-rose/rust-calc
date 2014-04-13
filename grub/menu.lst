@@ -1,0 +1,5 @@
+timeout 1
+
+title	Rust calc
+	root (fd0)
+	kernel /kernel
