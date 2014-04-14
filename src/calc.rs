@@ -4,6 +4,7 @@ use super::core::container::Container;
 
 // Needed, but not detected as needed by the compiler
 use super::core::option::{Some, None};
+use extra::range;
 
 use screen;
 
@@ -27,6 +28,25 @@ enum Associativity	{
 	Left,
 	Right,
 	No
+}
+
+fn power_of(base : f32, exp : i32) -> f32	{
+	let mut ret = base;
+	if exp > 0	{
+		range(0, exp as uint - 1, |i|	{
+			ret *= base;
+		});
+	}
+	else if exp < 0	{
+		ret = 1.0;
+		range(0, (-exp) as uint, |i|	{
+			ret /= base;
+		});
+	}
+	else	{
+		return 1.0;
+	}
+	return ret;
 }
 
 
@@ -118,6 +138,7 @@ pub unsafe fn get_result()	{
 							nums.push((num2 as int % num1 as int) as f32)
 						}
 					},
+					'^' => nums.push(power_of(num2, num1 as i32)),
 					_   => {valid = false; break;},
 				}
 			},
@@ -163,6 +184,7 @@ fn get_prec(op : u8) -> int	{
 		'*' => 2,
 		'%' => 2,
 		'/' => 2,
+		'^' => 3,
 		'(' => 4,
 		')' => 4,
 		_ => 0,
@@ -177,6 +199,7 @@ fn get_associativity(op : u8) -> Associativity	{
 		'*' => Left,
 		'/' => Left,
 		'%' => Left,
+		'^' => Left,
 		'(' => Left,
 		')' => Left,
 		_ => No,
@@ -185,7 +208,7 @@ fn get_associativity(op : u8) -> Associativity	{
 
 // Check if character is an operator
 fn is_oper(c : char) -> bool	{
-	c == '+' || c == '*' || c == '%' || c == '-' || c == '/'
+	c == '+' || c == '*' || c == '%' || c == '-' || c == '/' || c == '^'
 }
 
 // If character is a valid letter that should be replaced by a number

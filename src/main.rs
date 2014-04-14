@@ -32,7 +32,8 @@ unsafe fn print_functions()	{
 	screen::write_string(" + Addition\n", 3);
 	screen::write_string(" - Subtract\n", 4);
 	
-	screen::write_string("% Modulus\n", 1);
+	screen::write_string(" % Modulus\n", 1);
+	screen::write_string(" ^ Exponentiation\n", 2);
 }
 
 // Stop rustc from mangling the function names

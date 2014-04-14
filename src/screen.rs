@@ -100,10 +100,10 @@ pub unsafe fn putc(c: u8, ind : u8)	{
 		screen[ind].x = (screen[ind].x+screen[ind].tab_sz) & !(screen[ind].tab_sz-1);
 	}
 	else if c as char == '\r'	{
-		screen[ind].x = screen[ind].start_x;
+		screen[ind].x = 0;
 	}
 	else if c as char == '\n'	{
-		screen[ind].x = screen[ind].start_x;
+		screen[ind].x = 0;
 		screen[ind].y += 1;
 	}
 	else if c as char >= ' ' && c as char <= '~'	{
@@ -118,7 +118,6 @@ pub unsafe fn putc(c: u8, ind : u8)	{
 		screen[ind].y += 1;
 	}
 
-	// Scrolling is not done, because it should not be needed
 }
 
 // Write a string to a given screen
