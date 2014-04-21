@@ -49,25 +49,29 @@ pub unsafe fn kmain() {
 
 
 	desc_tables::initialize_idt();
+	// Input and result screen
+	screen::add_screen(1, 1, 79, 4, screen::Black as u8, screen::LightGray as u8);
 	
 	// 1MB of memory
 	kheap::kheap_add_block(0x01000000, 0x100000, 16);
-	//kheap::kheap_add_block(0x01100000, 0x100000, 16);
+//	kheap::kheap_add_block(0x01100000, 0x400, 16);
 
 	asm!("sti");	// Enable interrupts
 
 
-	// Input and result screen
-	screen::add_screen(1, 1, 79, 4, screen::Black as u8, screen::LightGray as u8);
-	
 	/*
 	// Basic sanity check on the memory, if we get to the calculator, it has
 	// passed
-	if kheap::heap_test(512) == false	{
+	if kheap::heap_test(64) == false	{
 		screen::write_string("Heap test failed", 0);
 		return;
 	}
-	*/
+
+	if kheap::realloc_test(64) == false	{
+		screen::write_string("realloc test failed", 0);
+		return;
+	}
+*/
 	
 	// Screens for the allowable operators
 	screen::add_screen(1, 5, 20, 9, screen::Black as u8, screen::Cyan as u8);

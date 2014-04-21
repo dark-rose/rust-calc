@@ -149,3 +149,18 @@ pub unsafe fn write_int(num : int, base : int, ind : u8)	{
 	}
 }
 
+// Used when debugging memory manager
+pub unsafe fn write_int_nomalloc(num : int, ind : u8)	{
+	let mut m = num;
+	let mut n : int = 1;
+	while n < m	{
+		n *= 10;
+	}
+	n /= 10;
+	while n > 0	{
+		putc((m/n + '0' as int) as u8, ind);
+		m -= (m/n)*n;
+		n /= 10;
+
+	}
+}

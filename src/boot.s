@@ -36,8 +36,6 @@ mboot:
 
 # Different functions required by rust-core, some only lead to endless loop
 [GLOBAL abort]
-[GLOBAL memcmp]
-[GLOBAL memcpy]
 [GLOBAL malloc]
 [GLOBAL free]
 [GLOBAL realloc]
@@ -63,15 +61,7 @@ start:
     jmp $			; Infinite loop
 
 ; Endless loops for stuff we haven't implemented yet, but is required by rust core
+
 abort:
-	jmp $
-
-memcmp:
-	jmp $
-
-memcpy:
-	jmp $
-
-realloc:
 	jmp $
 

@@ -33,13 +33,13 @@ enum Associativity	{
 fn power_of(base : f32, exp : i32) -> f32	{
 	let mut ret = base;
 	if exp > 0	{
-		range(0, exp as uint - 1, |i|	{
+		range(0, exp as uint - 1, |_i|	{
 			ret *= base;
 		});
 	}
 	else if exp < 0	{
 		ret = 1.0;
-		range(0, (-exp) as uint, |i|	{
+		range(0, (-exp) as uint, |_i|	{
 			ret /= base;
 		});
 	}
