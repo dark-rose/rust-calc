@@ -33,7 +33,7 @@ clean:
 	-rm *.o kernel *.bc $(RUSTCORE)
 
 kernel: $(OBJS) $(MAIN_OBJ) $(RUSTCORE)
-	$(LD) -o kernel -T link.ld "-(" $(RUSTCORE) "-)" $(OBJS) $(MAIN_OBJ)
+	$(LD)  -melf_i386 -o kernel -T link.ld "-(" $(RUSTCORE) "-)" $(OBJS) $(MAIN_OBJ)
 
 .s.o:
 	$(NASM) $(ASFLAGS) -o $@ $<
@@ -42,7 +42,7 @@ $(RUSTCORE):
 	$(RUSTC) $(RUSTCF) rust-core/core/lib.rs
 
 main.bc: $(RUSTCORE) $(SOURCES) $(MAIN)
-	$(RUSTC) -Z no-landing-pads --crate-type=lib --emit=bc -L . -o main.bc main.rs
+	$(RUSTC) --target i386-intel-linux -Z no-landing-pads --crate-type=lib --emit=bc -L . -o main.bc main.rs
 
 main.o: main.bc
 	$(CLANG) -c -O2 -o main.o main.bc
