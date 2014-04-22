@@ -1,4 +1,6 @@
 
+use screen;
+
 pub unsafe fn outb(port: u16, value: u8)	{
 	asm!("outb %al, %dx"
 	:
@@ -27,4 +29,13 @@ pub unsafe fn inw(port: u16) -> u16	{
 	return ret;
 }
 
+ #[no_mangle] pub extern "C" fn abort()	{
+	unsafe {
+		screen::reset_monitor();
+		screen::initialize_monitor(screen::Red as u8, screen::Black as u8);
+		screen::add_screen(28, 12, 40, 14, screen::Red as u8, screen::Black as u8);
+		screen::write_string("ABORT", 0);
+	}
 
+	loop { }
+ }

@@ -60,8 +60,4 @@ start:
     call kmain		; Entry point in the kernel
     jmp $			; Infinite loop
 
-; Endless loops for stuff we haven't implemented yet, but is required by rust core
-
-abort:
-	jmp $
 

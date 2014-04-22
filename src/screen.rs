@@ -49,6 +49,10 @@ struct Screen	{
 // Numbers of screens used
 static mut screen_used : u8 = 0;
 
+pub unsafe fn reset_monitor()	{
+	screen_used = 0;
+}
+
 pub unsafe fn add_screen(startx: u8, starty: u8, stopx: u8, stopy: u8, fg: u8, bg: u8)	{
 	screen[screen_used].color = (fg | (bg << 4)) as u8;
 	screen[screen_used].start_x = startx;
