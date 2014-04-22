@@ -90,8 +90,9 @@ pub unsafe fn get_result()	{
 		screen::write_string(" = ERROR", 0);
 		return;
 	}
-	// Stack with all the numbers as they are being evaluated
-	let mut nums : Vec<f32> = Vec::with_capacity(20);
+	// Stack with all the numbers as they are being evaluated, cannot be longer
+	// than the length of the result we got
+	let mut nums : Vec<f32> = Vec::with_capacity(res.len());
 
 	// If it's empty, loop will not happen and we must set it to false, otherwise
 	// it is valid by default.
@@ -240,10 +241,10 @@ fn parse_expression(s : &[u8], len : uint) -> (Vec<Oper>, int)	{
 	let mut letter_answer : int = 26;
 
 	// Temporary stack with operators
-	let mut tmp_stack : Vec<u8> = Vec::with_capacity(20);
+	let mut tmp_stack : Vec<u8> = Vec::new();
 
 	// Return (output) stack in reverse order.
-	let mut ret_stack : Vec<Oper> = Vec::with_capacity(20);
+	let mut ret_stack : Vec<Oper> = Vec::new();
 
 	// Where we are in the expression
 	let mut i : uint = 0;
@@ -391,7 +392,7 @@ fn parse_expression(s : &[u8], len : uint) -> (Vec<Oper>, int)	{
 	}
 
 	// Need to reverse the stack
-	let mut ret : Vec<Oper> = Vec::with_capacity(20);
+	let mut ret : Vec<Oper> = Vec::with_capacity(ret_stack.len());
 	while ret_stack.len() > 0	{
 		let t = ret_stack.pop().get();
 		ret.push(t);
