@@ -24,6 +24,7 @@ pub mod kheap;
 pub mod calc;
 pub mod isr;
 pub mod keyboard_driver;
+pub mod timer;
 
 
 unsafe fn print_functions()	{
@@ -94,6 +95,9 @@ pub unsafe fn kmain() {
 	// Larger answer screen at the bottom
 	screen::add_screen(1, 22, 79, 23, screen::Black as u8, screen::Cyan as u8);
 
+	// Clock
+	screen::add_screen(60, 0, 79, 1, screen::White as u8, screen::Blue as u8);
+
 	// All the variables are initialized to 0, just need to print it
 	extra::range(0, 26, |i| {
 		let scr_ind = (5 + i) as u8;
@@ -105,4 +109,7 @@ pub unsafe fn kmain() {
 
 	// Initialize input from keyboard
 	keyboard_driver::init_keyboard();
+
+	timer::init(20);
+	timer::read_rtc_clock(32);
 }

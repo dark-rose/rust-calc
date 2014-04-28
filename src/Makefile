@@ -19,7 +19,7 @@ OBJS=boot.o interrupt.o
 MAIN_OBJ=main.o
 
 # All Rust source files
-SOURCES=keyboard_driver.rs isr.rs screen.rs desc_tables.rs kernel.rs kheap.rs calc.rs extra.rs
+SOURCES=timer.rs keyboard_driver.rs isr.rs screen.rs desc_tables.rs kernel.rs kheap.rs calc.rs extra.rs
 MAIN=main.rs
 
 # Output name for rust-core
