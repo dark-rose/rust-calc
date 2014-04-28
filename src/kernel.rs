@@ -29,7 +29,7 @@ pub unsafe fn inw(port: u16) -> u16	{
 	return ret;
 }
 
- #[no_mangle] pub extern "C" fn abort()	{
+#[no_mangle] pub extern "C" fn abort()	{
 	unsafe {
 		screen::reset_monitor();
 		screen::initialize_monitor(screen::Red as u8, screen::Black as u8);
@@ -37,5 +37,28 @@ pub unsafe fn inw(port: u16) -> u16	{
 		screen::write_string("ABORT", 0);
 	}
 
-	loop { }
- }
+	loop { }	// Endless loop
+}
+
+// Reboot the computer
+pub unsafe fn reboot()	{
+	let mut tmp : u8;
+
+	// Disable interrupts
+	asm!("cli");
+
+	loop	{
+		tmp = inb(0x64);
+		if tmp & 1 != 0	{
+			inb(0x60);	// Clear data
+		}
+		if (tmp & 2) == 0	{
+			break;
+		}
+	}
+
+	outb(0x64, 0xFE);
+	loop	{
+		asm!("hlt");
+	}
+}

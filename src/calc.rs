@@ -1,9 +1,7 @@
 
 use super::core::vec::Vec;
 use super::core::container::Container;
-
-// Needed, but not detected as needed by the compiler
-use super::core::option::{Some, None};
+use super::core::option::None;
 use extra::range;
 
 use screen;

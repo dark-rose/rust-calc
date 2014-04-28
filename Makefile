@@ -18,5 +18,6 @@ clean:
 	make -C ./src clean
 
 fclean: clean
-	rm floppy.img
-	
+	rm -f floppy.img
+
+.PHONY: fclean clean run-qemu run-bochs kernel all

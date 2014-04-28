@@ -28,9 +28,8 @@ RUSTCORE=libcore-caef0f5f-0.0.rlib
 
 all: $(RUSTCORE) $(OBJS) $(MAIN_OBJ) $(MAIN) kernel
 
-.PHONY: clean
 clean:
-	-rm *.o kernel *.bc $(RUSTCORE)
+	rm -f *.o kernel *.bc $(RUSTCORE)
 
 kernel: $(OBJS) $(MAIN_OBJ) $(RUSTCORE)
 	$(LD)  -melf_i386 -o kernel -T link.ld "-(" $(RUSTCORE) "-)" $(OBJS) $(MAIN_OBJ)
@@ -47,3 +46,4 @@ main.bc: $(RUSTCORE) $(SOURCES) $(MAIN)
 main.o: main.bc
 	$(CLANG) -c -O2 -o main.o main.bc
 
+.PHONY: clean all
