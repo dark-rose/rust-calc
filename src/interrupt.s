@@ -22,12 +22,12 @@
 ; This macro creates a stub for an IRQ - the first parameter is
 ; the IRQ number, the second is the ISR number it is remapped to.
 %macro IRQ 2
-  global irq%1
-  irq%1:
-	cli
-	push byte 0
-	push byte %2
-	jmp irq_common_stub
+	global irq%1
+	irq%1:
+		cli
+		push byte 0
+		push byte %2
+		jmp irq_common_stub
 %endmacro
 		
 ISR_NOERRCODE 0
@@ -87,7 +87,7 @@ extern isr_handler
 ; up for kernel mode segments, calls the C-level fault handler,
 ; and finally restores the stack frame.
 isr_common_stub:
-	pusha			;  Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
+	pusha			; Pushes edi,esi,ebp,esp,ebx,edx,ecx,eax
 
 	mov ax, ds		; Lower 16-bits of eax = ds.
 	push eax		; save the data segment descriptor

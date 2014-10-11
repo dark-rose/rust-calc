@@ -1,35 +1,18 @@
 
-; Various multiboot values
-MBOOT_PAGE_ALIGN    equ 1<<0
-MBOOT_MEM_INFO      equ 1<<1
-MBOOT_HEADER_MAGIC  equ 0x1BADB002	; Multiboot Magic value, says that we are
-									; multiboot compatible
-
-MBOOT_HEADER_FLAGS  equ MBOOT_PAGE_ALIGN | MBOOT_MEM_INFO
-
-; When MBOOT_HEADER_MAGIC, MBOOT_HEADER_FLAGS and this is added together, the
-; result should be zero
-MBOOT_CHECKSUM      equ -(MBOOT_HEADER_MAGIC + MBOOT_HEADER_FLAGS)
-
-
 [BITS 32]
 
-[GLOBAL mboot]
-[EXTERN code]
-[EXTERN bss]
-[EXTERN end]
+MULTIBOOT_PAGE_ALIGN    equ 1<<0
+MULTIBOOT_MEMORY_INFO   equ 1<<1
+MULTIBOOT_HEADER_MAGIC  equ 0x1BADB002
+MULTIBOOT_HEADER_FLAGS  equ MULTIBOOT_PAGE_ALIGN | MULTIBOOT_MEMORY_INFO
+MULTIBOOT_CHECKSUM  equ -(MULTIBOOT_HEADER_MAGIC + MULTIBOOT_HEADER_FLAGS)
 
-; This is all to make our kernel multiboot compatible
-mboot:
-    dd MBOOT_HEADER_MAGIC
-    dd MBOOT_HEADER_FLAGS
-    dd MBOOT_CHECKSUM
-    
-    dd mboot
-    dd code
-    dd bss
-    dd end
-    dd start
+ALIGN 4
+multiboot_header:
+	dd MULTIBOOT_HEADER_MAGIC
+	dd MULTIBOOT_HEADER_FLAGS
+	dd MULTIBOOT_CHECKSUM
+
 
 [GLOBAL start]
 [EXTERN kmain]
@@ -42,9 +25,8 @@ mboot:
 
 ; Actually loading the kernel
 start:
-    push ebx		; Load multiboot information:
-
-    cli
+	mov esp, sys_stack	; Set up the kernel stack
+	push ebx		; Push multiboot information:
 
 	; enable SSE, needed for handling floating point values
 	mov ecx, cr0
@@ -57,7 +39,9 @@ start:
 	bts ecx, 10	; set CR4.OSXMMEXCPT bit
 	mov cr4, ecx
 
-    call kmain		; Entry point in the kernel
-    jmp $			; Infinite loop
+	call kmain		; Entry point in the kernel
+	jmp $			; Infinite loop
 
-
+[section .bss]
+	resb 0x1000
+	sys_stack:

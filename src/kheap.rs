@@ -255,7 +255,6 @@ unsafe fn kheap_malloc_internal(len : uint) -> *mut u8	{
 	}
 }
 
-// Should allocate more if there is no more memory left
 #[no_mangle] pub extern "C" fn malloc(len : uint) -> *mut u8	{
 	unsafe	{
 		return kheap_malloc_internal(len);

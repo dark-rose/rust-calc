@@ -8,4 +8,6 @@ src/kernel
 
 src/libcore-caef0f5f-0.0.rlib
 
-floppy.img
+image.iso
+iso/boot/kernel
+

@@ -1,23 +1,25 @@
 
-all: floppy.img kernel
-	./update_image.sh
 
-floppy.img:
-	./create_image.sh
+all: kernel
+	cp src/kernel iso/boot
+	$(GRUB_RESCUE) -o image.iso iso/
 
 kernel:
 	make -C ./src
 
 run-bochs: all
-	bochs -f .bochsrc.txt
+	$(BOCHS) -q -f .bochsrc.txt
+
+run-bochs-debug: all
+	$(BOCHSD) -q -f .bochsrc.txt
 
 run-qemu: all
-	qemu-system-i386 -fda floppy.img
+	qemu-system-i386 -cdrom image.iso
 
 clean:
 	make -C ./src clean
 
 fclean: clean
-	rm -f floppy.img
+	rm -f bochsout.txt iso/boot/kernel image.iso
 
 .PHONY: fclean clean run-qemu run-bochs kernel all

@@ -41,8 +41,6 @@ unsafe fn print_functions()	{
 // no_split_stack is used to stop the linker from complaining that __morestack
 // is missing, thanks to
 // http://blog.theincredibleholk.org/blog/2013/11/18/booting-to-rust/
-// The function is unsafe because we need to manipulate the VGA memory address
-// directly
 #[no_mangle] #[no_split_stack]
 pub unsafe fn kmain() {
 	screen::initialize_monitor(screen::White as u8, screen::Blue as u8);
@@ -50,6 +48,7 @@ pub unsafe fn kmain() {
 
 
 	desc_tables::initialize_idt();
+	desc_tables::initialize_gdt();
 	// Input and result screen
 	screen::add_screen(1, 1, 79, 4, screen::Black as u8, screen::LightGray as u8);
 	

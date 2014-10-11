@@ -15,7 +15,7 @@ ASFLAGS=-felf
 RUSTCF=--cfg libc --out-dir . -O -Z no-landing-pads
 
 # All the object files we create
-OBJS=boot.o interrupt.o
+OBJS=boot.o interrupt.o flush.o
 MAIN_OBJ=main.o
 
 # All Rust source files
@@ -43,7 +43,8 @@ $(RUSTCORE):
 main.bc: $(RUSTCORE) $(SOURCES) $(MAIN)
 	$(RUSTC) --target i386-intel-linux -Z no-landing-pads --crate-type=lib --emit=bc -L . -o main.bc main.rs
 
+# -mstackrealign is used to align stack, is necessary in some cases
 main.o: main.bc
-	$(CLANG) -c -O2 -o main.o main.bc
+	$(CLANG) -mstackrealign -c -O2 -o main.o main.bc
 
 .PHONY: clean all

@@ -11,7 +11,8 @@ Prerequisites:
 - Clang 3.5 (Not sure on the exact version number, but must be newer than 3.0) -
   Path must be placed in $CLANG35
 - ld and nasm
-- Bochs or Qemu
+- Bochs (must be placed in $BOCHS) or Qemu
+- Grub2 (grub-mkrescue in $GRUB\_RESCUE)
 
 Building:
 

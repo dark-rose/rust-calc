@@ -1,14 +1,23 @@
-megs: 32
+memory: guest=64, host=32
+
 romimage: file=/usr/share/bochs/BIOS-bochs-latest, address=0x00000
 vgaromimage: file=/usr/share/bochs/VGABIOS-lgpl-latest
-floppya: 1_44=floppy.img, status=inserted
-boot: a
+ata0: enabled=1, ioaddr1=0x1f0, ioaddr2=0x3f0, irq=14
+ata0-master: type=cdrom, path="image.iso", status=inserted
+boot: cdrom
 log: bochsout.txt
 mouse: enabled=0
 clock: sync=realtime
-cpu: ips=500000
-cpuid: mmx =1,   sep=1, sse=sse4_2
+cpu: ips=5000000
+
+#cpuid: mmx =1,   sep=1, sse=sse4_2
+
 display_library: sdl
 port_e9_hack: enabled=1
-keyboard_mapping: enabled=1, map=sdl-pc-us.map
-memory: guest=1024, host=256
+
+# Deprecated, some keys don't work on the newest Bochs
+#keyboard_mapping: enabled=1, map=sdl-pc-us.map
+
+# Internal debugger (xchg bx, bx)
+# Is only used if debug version is used
+magic_break: enabled=1

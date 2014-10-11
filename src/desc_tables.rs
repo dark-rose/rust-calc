@@ -57,6 +57,10 @@ extern {
 	fn irq15();
 }
 
+extern	{
+	fn gdt_flush(ptr : u32);
+}
+
 #[allow(non_camel_case_types)]
 #[packed]
 struct IDT_entry	{
@@ -80,6 +84,37 @@ struct IDT_pointer	{
 static mut idt_entry : [IDT_entry, ..256] = [IDT_entry {base_low : 0, sel :
 0, zero : 0, flags : 0, base_high : 0}, ..256];
 
+#[allow(non_camel_case_types)]
+#[packed]
+struct GDT_entry	{
+	limit_low : u16,
+	base_low : u16,
+	base_mid : u8,
+	access : u8,
+	gran : u8,
+	base_hi : u8
+}
+
+#[allow(non_camel_case_types)]
+#[packed]
+struct GDT_pointer	{
+	limit : u16,
+	base : u32
+}
+
+#[no_mangle] static mut gdt_pointer : GDT_pointer = GDT_pointer{limit : 0, base : 0};
+
+#[no_mangle]
+static mut gdt_entry : [GDT_entry, ..3] = [GDT_entry {
+	limit_low : 0,
+	base_low : 0,
+	base_mid : 0,
+	access : 0,
+	gran : 0,
+	base_hi : 0
+}, ..3];
+
+
 
 // Set one IDT gate
 unsafe fn idt_set_gate(num : u8, func : extern "C" unsafe fn(), sel : u16, flags : u8)	{
@@ -89,6 +124,18 @@ unsafe fn idt_set_gate(num : u8, func : extern "C" unsafe fn(), sel : u16, flags
 	idt_entry[num].flags = flags;
 	idt_entry[num].base_high = (base >> 16) as u16;
 	idt_entry[num].base_low = (base & ((1 << 16) -1)) as u16;
+}
+
+unsafe fn gdt_set_gate(num : u8, base : u32, limit : u32, acc : u8, gran : u8)	{
+	gdt_entry[num].limit_low = (limit & 0xFFFF) as u16;
+
+	gdt_entry[num].base_low = (base & 0xFFFF) as u16;
+	gdt_entry[num].base_mid = ((base >> 16) & 0xFF) as u8;
+	gdt_entry[num].base_hi = ((base >> 24) & 0xFF) as u8;
+
+	gdt_entry[num].access = acc;
+	gdt_entry[num].gran = ((limit >> 16) & 0x0F) as u8;
+	gdt_entry[num].gran |= gran & 0xF0;
 }
 
 // Remap the IRQ table
@@ -103,6 +150,23 @@ unsafe fn remap_irq()	{
 	outb(0xA1, 0x01);
 	outb(0x21, 0x00);
 	outb(0xA1, 0x00);
+}
+
+
+pub unsafe fn initialize_gdt()	{
+	gdt_pointer.limit = ((mem::size_of::<GDT_entry>() * 3) - 1) as u16;
+	gdt_pointer.base = &gdt_entry as *[GDT_entry, ..3] as u32;
+
+	// Mandatory 0-entry
+	gdt_set_gate(0, 0, 0, 0, 0);
+
+	// Kernel space code, offset 0x08
+	gdt_set_gate(1, 0, 0xFFFFFFFF, 0x9A, 0xCF);
+
+	// Kernel space data, offset 0x10
+	gdt_set_gate(2, 0, 0xFFFFFFFF, 0x92, 0xCF);
+
+	gdt_flush(&gdt_pointer as *GDT_pointer as u32)
 }
 
 // Initialize the IDT table
